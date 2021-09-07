@@ -42,8 +42,10 @@ class PathProvider(Task):
 
 
 @Geyser.functor(provides=('path',), requires=('path_provider', 'relative_path', 'mode'))
-def path_generator(path_provider, relative_path: Sequence[Text], mode: Text) -> Path:
-    return getattr(path_provider, mode)(*relative_path)
+def path_generator(path_provider, relative_path: Sequence[Text], mode: Text, logger: Logger) -> Path:
+    generated = getattr(path_provider, mode)(*relative_path)
+    logger.debug(f'Generated path is {generated}')
+    return generated
 
 
 @Geyser.task(provides=('env',))
@@ -51,7 +53,7 @@ class EnvProvider(Task):
     def execute(self, *args, logger: Logger, **kwargs):
         for key, value in self.inject.items():
             if key != 'logger':
-                logger.debug(f'Inject {key}={value} into environment value')
+                logger.debug(f'Inject {key}={value} into environment values')
                 environ[key] = value
 
         return environ,
@@ -59,10 +61,12 @@ class EnvProvider(Task):
 
 @Geyser.task(provides=('id',))
 class IdProvider(Task):
-    def execute(self, *args, title: Text = None, **kwargs):
+    def execute(self, *args, logger, title: Text = None, **kwargs):
         uuid = uuid4().hex
         timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
         if title is None:
-            return f'{timestamp}_{uuid}',
+            idstr = f'{timestamp}_{uuid}',
         else:
-            return f'{title}_{timestamp}_{uuid}',
+            idstr = f'{title}_{timestamp}_{uuid}',
+        logger.debug(f'Runtime ID is {idstr}')
+        return idstr
