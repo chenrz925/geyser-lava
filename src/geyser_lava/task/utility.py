@@ -34,7 +34,7 @@ class PathProvider(Task):
             return self._makedirs_join(*args, root_dir=root_dir)
 
         def current(self, *args) -> Path:
-            root_dir = self._curdir / 'geyser'
+            root_dir = self._curdir
             return self._makedirs_join(*args, root_dir=root_dir)
 
     def execute(self, *args, **kwargs):
