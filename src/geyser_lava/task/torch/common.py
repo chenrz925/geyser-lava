@@ -54,7 +54,7 @@ class OptimizerProvider(Task):
         optim_ref = optimizer_params.pop('reference')
         optim_type = reflect(optim_ref)
         if issubclass(optim_type, Optimizer):
-            optimizer = inject_logger(optim_type, **optimizer_params)
+            optimizer = inject_logger(optim_type, params=model.parameters(), **optimizer_params)
             logger.debug(f'Finish building optimizer "{optim_ref}"')
             return optimizer
         else:
