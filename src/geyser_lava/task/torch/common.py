@@ -56,7 +56,7 @@ class OptimizerProvider(Task):
         if issubclass(optim_type, Optimizer):
             optimizer = inject_logger(optim_type, params=model.parameters(), **optimizer_params)
             logger.debug(f'Finish building optimizer "{optim_ref}"')
-            return optimizer
+            return optimizer,
         else:
             raise ValueError(
                 f'Reference "{optim_ref}" is NOT a subclass of {Optimizer.__module__}.{Optimizer.__name__}')
