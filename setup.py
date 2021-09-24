@@ -193,7 +193,10 @@ setup(
     # If there are data files included in your packages that need to be
     # installed, specify them here.
     package_data={
-        'geyser_lava': ['profile/*']
+        'geyser_lava': [
+            'profile/*',
+            'profile/*/*'
+        ]
     },
 
     # Although 'package_data' is the preferred approach, in some case you may
