@@ -215,6 +215,7 @@ setup(
     # For example, the following would provide a command called `sample` which
     # executes the function `main` from this package when invoked:
     entry_points={  # Optional
+        'geyser.profile': 'geyser_lava = geyser_lava.profile'
     },
 
     # List additional URLs that are relevant to your project as a dict.
