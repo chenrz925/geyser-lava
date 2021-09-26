@@ -70,3 +70,11 @@ class IdProvider(Task):
             idstr = f'{title}_{timestamp}_{uuid}',
         logger.debug(f'Runtime ID is {idstr}')
         return idstr
+
+
+@Geyser.functor(provides=('path',))
+def path_builder(typename: Text, subpaths: Sequence[Text]) -> Path:
+    provider = PathProvider.Provider()
+    assert typename in ('temporary', 'home', 'current')
+
+    return getattr(provider, typename)(*subpaths),

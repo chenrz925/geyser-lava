@@ -15,6 +15,7 @@ from torch.utils.data import DataLoader
     provides=('model',),
     requires=(
             'model', 'train_loader', 'validate_loader', 'optimizer', 'device', 'loss', 'metrics_params', 'max_epochs',
+            'non_blocking'
     )
 )
 class SupervisedTrainer(Task):
@@ -28,7 +29,7 @@ class SupervisedTrainer(Task):
             self, *args, logger, id, path,
             model: nn.Module, train_loader: DataLoader, validate_loader: DataLoader, optimizer: optim.Optimizer,
             loss: nn.Module, device: Text, metric_params: Sequence[Mapping[Text, Any]], max_epochs: int,
-            non_blocking: bool = False, seed: int = 0x3a4e, checkpoint_per: int = 10, **kwargs
+            non_blocking: bool = False, **kwargs
     ) -> Tuple[nn.Module]:
         model = model.to(device)
 

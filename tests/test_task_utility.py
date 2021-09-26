@@ -19,6 +19,13 @@ def utility_id_validator(id, **kwargs):
     assert 'TEST' in id
 
 
+@Geyser.functor(requires=None)
+def utility_parameters_pass(*args, logger, **kwargs):
+    assert 'a' not in kwargs
+    assert 'c' not in kwargs
+    return kwargs,
+
+
 class TestTaskUtility(object):
     def test_ultility_path_provider(self):
         Geyser._build_context({
@@ -46,7 +53,7 @@ class TestTaskUtility(object):
                     'type': 'task'
                 },
                 {
-                    'reference': 'tests.test_task_ultility.UtilityPathValidator',
+                    'reference': 'tests.test_task_utility.UtilityPathValidator',
                     'name': 'validator',
                     'type': 'functor',
                     'rebind': {
@@ -74,7 +81,7 @@ class TestTaskUtility(object):
                     }
                 },
                 {
-                    'reference': 'tests.test_task_ultility.UtilityEnvValidator',
+                    'reference': 'tests.test_task_utility.UtilityEnvValidator',
                     'name': 'validator',
                     'type': 'functor',
                 }
@@ -96,7 +103,7 @@ class TestTaskUtility(object):
                     'type': 'task',
                 },
                 {
-                    'reference': 'tests.test_task_ultility.UtilityIdValidator',
+                    'reference': 'tests.test_task_utility.UtilityIdValidator',
                     'name': 'validator',
                     'type': 'functor',
                 }
@@ -109,5 +116,30 @@ class TestTaskUtility(object):
             'engine': 'serial',
             'inject': {
                 'title': 'TEST'
+            }
+        })()
+
+    def test_pre_execute(self):
+        Geyser._build_context({
+            'tasks': [
+                {
+                    'reference': 'tests.test_task_utility.UtilityParametersPass',
+                    'name': 'param',
+                    'type': 'functor',
+                    'inject': {
+                        'a': 0,
+                        'b': 0,
+                    }
+                }
+            ],
+            'flow': {
+                'name': 'root',
+                'type': 'linear',
+                'include': ['param']
+            },
+            'engine': 'serial',
+            'inject': {
+                'c': 1,
+                'd': 1,
             }
         })()
