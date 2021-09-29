@@ -6,6 +6,7 @@ from geyser.utility import reflect
 from ignite import engine
 from ignite.utils import convert_tensor
 from ignite.handlers import Checkpoint, DiskSaver, global_step_from_engine
+from ignite.metrics import Loss
 from taskflow.task import Task
 from torch import nn, optim
 from torch.utils.data import DataLoader
@@ -20,7 +21,7 @@ from torch.utils.data import DataLoader
 )
 class SupervisedTrainer(Task):
     def build_metrics(self, *args, loss: nn.Module):
-        return dict(loss=loss, **dict(map(
+        return dict(loss=Loss(loss), **dict(map(
             lambda it: (it['name'], reflect(it['reference'])(**(it['params'] if 'params' in it else {}))),
             args
         )))
@@ -28,7 +29,7 @@ class SupervisedTrainer(Task):
     def execute(
             self, *args, logger, id, path,
             model: nn.Module, train_loader: DataLoader, validate_loader: DataLoader, optimizer: optim.Optimizer,
-            loss: nn.Module, device: Text, metric_params: Sequence[Mapping[Text, Any]], max_epochs: int,
+            loss: nn.Module, device: Text, metrics_params: Sequence[Mapping[Text, Any]], max_epochs: int,
             non_blocking: bool = False, **kwargs
     ) -> Tuple[nn.Module]:
         model = model.to(device)
@@ -37,7 +38,7 @@ class SupervisedTrainer(Task):
             model, optimizer, loss, device, non_blocking, self.prepare_train_batch
         )
         evaluator = engine.create_supervised_evaluator(
-            model, self.build_metrics(*metric_params, loss=loss), device, non_blocking, self.prepare_validate_batch
+            model, self.build_metrics(*metrics_params, loss=loss), device, non_blocking, self.prepare_validate_batch
         )
 
         @evaluator.on(engine.Events.COMPLETED)

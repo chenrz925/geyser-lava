@@ -1,3 +1,4 @@
+from inspect import isfunction
 from logging import Logger
 from typing import Tuple, Mapping, Text, Any
 
@@ -30,10 +31,13 @@ class ModelProvider(Task):
     ) -> Tuple[Module]:
         model_ref = model_params.pop('reference')
         model_type = reflect(model_ref)
-        if issubclass(model_type, Module):
+        if isinstance(model_type, type) and issubclass(model_type, Module):
             model = inject_logger(model_type, **model_params)
             logger.debug(f'Finish building module "{model_ref}"')
             return model,
+        elif isfunction(model_type):
+            logger.debug(f'Finish building module by function "{model_ref}"')
+            return inject_logger(model_type, **model_params),
         else:
             raise ValueError(f'Reference "{model_ref}" is NOT a subclass of {Module.__module__}.{Module.__name__}')
 
@@ -60,3 +64,4 @@ class OptimizerProvider(Task):
         else:
             raise ValueError(
                 f'Reference "{optim_ref}" is NOT a subclass of {Optimizer.__module__}.{Optimizer.__name__}')
+
