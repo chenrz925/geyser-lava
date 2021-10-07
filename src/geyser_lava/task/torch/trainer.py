@@ -4,9 +4,9 @@ import torch
 from geyser import Geyser
 from geyser.utility import reflect
 from ignite import engine
-from ignite.utils import convert_tensor
 from ignite.handlers import Checkpoint, DiskSaver, global_step_from_engine
 from ignite.metrics import Loss
+from ignite.utils import convert_tensor
 from taskflow.task import Task
 from torch import nn, optim
 from torch.utils.data import DataLoader

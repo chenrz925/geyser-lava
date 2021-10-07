@@ -1,4 +1,4 @@
-"$schema" = "https://ghproxy.com/https://github.com/chenrz925/geyser/raw/main/src/geyser/schema.json"
+"$schema" = "https://geyser.waterch.cn/zh_CN/latest/schema.json"
 engine = "serial"
 [[tasks]]
 reference = "geyser_lava.task.utility.IdProvider"

@@ -64,4 +64,3 @@ class OptimizerProvider(Task):
         else:
             raise ValueError(
                 f'Reference "{optim_ref}" is NOT a subclass of {Optimizer.__module__}.{Optimizer.__name__}')
-
